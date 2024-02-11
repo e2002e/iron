@@ -299,6 +299,10 @@ class RenderPath {
 		if (context == "mesh") LightObject.updateClusters(Scene.active.camera);
 		#end
 
+		#if (rp_voxels != "Off")
+		armory.renderpath.RenderPathCreator.clipmapLevel = (armory.renderpath.RenderPathCreator.clipmapLevel + 1) % Main.voxelgiClipmapCount;
+		#end
+
 		if (!drawn) submitDraw(context);
 
 		#if arm_debug
