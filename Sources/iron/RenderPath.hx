@@ -77,6 +77,19 @@ class RenderPath {
 		active = renderPath;
 	}
 
+
+	#if (rp_voxels != "Off")
+	public var voxelized = 0;
+	public var onVoxelize: Void->Bool = null;
+	var camera = iron.Scene.active.camera;
+	public function voxelize() { // Returns true if scene should be voxelized
+		if (onVoxelize != null) return onVoxelize();
+		if (camera.transform.diff() == true)
+			voxelized = 0;
+		return ++voxelized <  Main.voxelgiClipmapCount - 1 ? false : true;
+	}
+	#end
+
 	public function new() {}
 
 	public function renderFrame(g: Graphics) {
