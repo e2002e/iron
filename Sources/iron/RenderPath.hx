@@ -83,8 +83,7 @@ class RenderPath {
 	public var onVoxelize: Void->Bool = null;
 	var camera = iron.Scene.active.camera;
 	public function voxelize() { // Returns true if scene should be voxelized
-		if (onVoxelize != null) return onVoxelize();
-		if (camera.transform.diff() == true)
+		if (camera.transform.diff() && armory.renderpath.RenderPathCreator.clipmapLevel == 0)
 			voxelized = 0;
 		return ++voxelized <  Main.voxelgiClipmapCount - 1 ? false : true;
 	}
