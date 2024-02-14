@@ -515,9 +515,9 @@ class LightObject extends Object {
 
 	static function updateLightsArray() {
 		if (lightsArray == null) { // vec4x3 - 1: pos, a, color, b, 2: dir, c
-			lightsArray = new Float32Array(maxLights * 4 * 3);
+			lightsArray = new Float32Array(maxLights * 12);
 			#if arm_spot
-			lightsArraySpot = new Float32Array(maxLights * 4 * 2);
+			lightsArraySpot = new Float32Array(maxLights * 8);
 			#end
 		}
 		var lights = Scene.active.lights;
@@ -634,6 +634,8 @@ class LightObject extends Object {
 		return 8;
 		#elseif (rp_max_lights == 16)
 		return 16;
+		#elseif (rp_max_lights == 24)
+		return 24;
 		#elseif (rp_max_lights == 32)
 		return 32;
 		#elseif (rp_max_lights == 64)
@@ -648,6 +650,8 @@ class LightObject extends Object {
 		return 8;
 		#elseif (rp_max_lights_cluster == 16)
 		return 16;
+		#elseif (rp_max_lights_cluster == 24)
+		return 24;
 		#elseif (rp_max_lights_cluster == 32)
 		return 32;
 		#elseif (rp_max_lights_cluster == 64)

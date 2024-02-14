@@ -896,6 +896,17 @@ class Uniforms {
 					}
 				}
 				#end
+				#if arm_spot
+				case "_biasLightWorldViewProjectionMatrixSpot": {
+					var light = getSpot(0);
+					if (light != null) {
+						object == null ? helpMat.setIdentity() : helpMat.setFrom(object.transform.worldUnpack);
+						helpMat.multmat(light.VP);
+						helpMat.multmat(biasMat);
+						m = helpMat;
+					}
+				}
+				#end
 			}
 
 			if (m == null) {
