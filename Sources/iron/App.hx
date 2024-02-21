@@ -51,6 +51,11 @@ class App {
 
 	#if (rp_voxels != "Off")
 	static function update_clipmaps() {
+		if (Scene.active == null || !Scene.active.ready) return;
+		if (pauseUpdates) return;
+
+		armory.renderpath.Clipmap.clipmapLevel = (armory.renderpath.Clipmap.clipmapLevel + 1) % Main.voxelgiClipmapCount;
+
 		var texelSize = Main.voxelgiVoxelSize * 2.0 * Math.pow(2.0, armory.renderpath.Clipmap.clipmapLevel);
 		var camera = iron.Scene.active.camera;
 		var center = new iron.math.Vec3(
@@ -64,8 +69,6 @@ class App {
 		armory.renderpath.Clipmap.clipmap_center_last.z = Std.int((armory.renderpath.Clipmap.clipmap_center.z - center.z) / texelSize);
 
 		armory.renderpath.Clipmap.clipmap_center = center;
-
-		armory.renderpath.Clipmap.clipmapLevel = (armory.renderpath.Clipmap.clipmapLevel + 1) % Main.voxelgiClipmapCount;
 	}
 	#end
 
