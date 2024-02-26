@@ -239,24 +239,6 @@ class Scene {
 		#end
 		for (anim in animations) anim.update(Time.delta);
 		for (e in empties) if (e != null && e.parent != null) e.transform.update();
-
-		#if (rp_voxels != "Off")
-		armory.renderpath.Clipmap.clipmapLevel = (armory.renderpath.Clipmap.clipmapLevel + 1) % Main.voxelgiClipmapCount;
-
-		var texelSize = Main.voxelgiVoxelSize * 2.0 * Math.pow(2.0, armory.renderpath.Clipmap.clipmapLevel);
-		var camera = iron.Scene.active.camera;
-		var center = new iron.math.Vec3(
-			Math.floor(camera.transform.worldx() / texelSize) * texelSize,
-			Math.floor(camera.transform.worldy() / texelSize) * texelSize,
-			Math.floor(camera.transform.worldz() / texelSize) * texelSize
-		);
-
-		armory.renderpath.Clipmap.clipmap_center_last.x = Std.int((armory.renderpath.Clipmap.clipmap_center.x - center.x) / texelSize);
-		armory.renderpath.Clipmap.clipmap_center_last.y = Std.int((armory.renderpath.Clipmap.clipmap_center.y - center.y) / texelSize);
-		armory.renderpath.Clipmap.clipmap_center_last.z = Std.int((armory.renderpath.Clipmap.clipmap_center.z - center.z) / texelSize);
-
-		armory.renderpath.Clipmap.clipmap_center = center;
-		#end
 	}
 
 	public function renderFrame(g: kha.graphics4.Graphics) {
