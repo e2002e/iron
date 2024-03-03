@@ -35,7 +35,6 @@ class App {
 		done();
 		kha.System.notifyOnFrames(render);
 		kha.Scheduler.addTimeTask(update, 0, iron.system.Time.delta);
-		//kha.Scheduler.addTimeTask(update_clipmaps, 0, iron.system.Time.delta / Main.voxelgiClipmapCount);
 	}
 
 	public static function reset() {
@@ -45,32 +44,6 @@ class App {
 		traitRenders = [];
 		traitRenders2D = [];
 		if (onResets != null) for (f in onResets) f();
-	}
-
-	static function update_clipmaps() {
-		armory.renderpath.Clipmap.clipmapLevel = (armory.renderpath.Clipmap.clipmapLevel + 1) % Main.voxelgiClipmapCount;
-
-		armory.renderpath.Clipmap.voxelSize = Main.voxelgiVoxelSize * Math.pow(2.0, armory.renderpath.Clipmap.clipmapLevel);
-		var texelSize = 2.0 * armory.renderpath.Clipmap.voxelSize;
-		var camera = iron.Scene.active.camera;
-		var center = new iron.math.Vec3(
-			Math.floor(camera.transform.worldx() / texelSize) * texelSize,
-			Math.floor(camera.transform.worldy() / texelSize) * texelSize,
-			Math.floor(camera.transform.worldz() / texelSize) * texelSize
-		);
-
-		armory.renderpath.Clipmap.clipmap_center_last.x = Std.int((armory.renderpath.Clipmap.clipmap_center.x - center.x) / texelSize);
-		armory.renderpath.Clipmap.clipmap_center_last.y = Std.int((armory.renderpath.Clipmap.clipmap_center.y - center.y) / texelSize);
-		armory.renderpath.Clipmap.clipmap_center_last.z = Std.int((armory.renderpath.Clipmap.clipmap_center.z - center.z) / texelSize);
-
-		armory.renderpath.Clipmap.clipmap_center = center;
-
-		var res = armory.renderpath.Inc.getVoxelRes();
-		var extents = new iron.math.Vec3(armory.renderpath.Clipmap.voxelSize * res);
-		if (armory.renderpath.Clipmap.extents.x != extents.x || armory.renderpath.Clipmap.extents.y != extents.y || armory.renderpath.Clipmap.extents.z != extents.z)
-			armory.renderpath.Clipmap.pre_clear = true;
-
-		armory.renderpath.Clipmap.extents = extents;
 	}
 
 	static function update() {
@@ -127,32 +100,6 @@ class App {
 		}
 		lastw = App.w();
 		lasth = App.h();
-
-		#if (rp_voxels != "Off")
-		armory.renderpath.Clipmap.clipmapLevel = (armory.renderpath.Clipmap.clipmapLevel + 1) % Main.voxelgiClipmapCount;
-
-		armory.renderpath.Clipmap.voxelSize = Main.voxelgiVoxelSize * Math.pow(2.0, armory.renderpath.Clipmap.clipmapLevel);
-		var texelSize = 2.0 * armory.renderpath.Clipmap.voxelSize;
-		var camera = iron.Scene.active.camera;
-		var center = new iron.math.Vec3(
-			Math.floor(camera.transform.worldx() / texelSize) * texelSize,
-			Math.floor(camera.transform.worldy() / texelSize) * texelSize,
-			Math.floor(camera.transform.worldz() / texelSize) * texelSize
-		);
-
-		armory.renderpath.Clipmap.clipmap_center_last.x = Std.int((armory.renderpath.Clipmap.clipmap_center.x - center.x) / texelSize);
-		armory.renderpath.Clipmap.clipmap_center_last.y = Std.int((armory.renderpath.Clipmap.clipmap_center.y - center.y) / texelSize);
-		armory.renderpath.Clipmap.clipmap_center_last.z = Std.int((armory.renderpath.Clipmap.clipmap_center.z - center.z) / texelSize);
-
-		armory.renderpath.Clipmap.clipmap_center = center;
-
-		var res = armory.renderpath.Inc.getVoxelRes();
-		var extents = new iron.math.Vec3(armory.renderpath.Clipmap.voxelSize * res);
-		if (armory.renderpath.Clipmap.extents.x != extents.x || armory.renderpath.Clipmap.extents.y != extents.y || armory.renderpath.Clipmap.extents.z != extents.z)
-			armory.renderpath.Clipmap.pre_clear = true;
-
-		armory.renderpath.Clipmap.extents = extents;
-		#end
 	}
 
 	static function render(frames: Array<kha.Framebuffer>) {
@@ -187,6 +134,60 @@ class App {
 
 		#if arm_debug
 		renderPathTime = kha.Scheduler.realTime() - startTime;
+		#end
+
+
+
+		#if (rp_voxels != "Off")
+		armory.renderpath.Clipmap.clipmapLevel = (armory.renderpath.Clipmap.clipmapLevel + 1) % Main.voxelgiClipmapCount;
+
+		armory.renderpath.Clipmap.voxelSize = Main.voxelgiVoxelSize * Math.pow(2.0, armory.renderpath.Clipmap.clipmapLevel);
+		var texelSize = 2.0 * armory.renderpath.Clipmap.voxelSize;
+		var camera = iron.Scene.active.camera;
+		var center = new iron.math.Vec3(
+			Math.floor(camera.transform.worldx() / texelSize) * texelSize,
+			Math.floor(camera.transform.worldy() / texelSize) * texelSize,
+			Math.floor(camera.transform.worldz() / texelSize) * texelSize
+		);
+
+		armory.renderpath.Clipmap.clipmap_center_last.x = Std.int((armory.renderpath.Clipmap.clipmap_center.x - center.x) / texelSize);
+		armory.renderpath.Clipmap.clipmap_center_last.y = Std.int((armory.renderpath.Clipmap.clipmap_center.y - center.y) / texelSize);
+		armory.renderpath.Clipmap.clipmap_center_last.z = Std.int((armory.renderpath.Clipmap.clipmap_center.z - center.z) / texelSize);
+
+		armory.renderpath.Clipmap.clipmap_center = center;
+
+		var res = armory.renderpath.Inc.getVoxelRes();
+		var extents = new iron.math.Vec3(armory.renderpath.Clipmap.voxelSize * res);
+		if (armory.renderpath.Clipmap.extents.x != extents.x || armory.renderpath.Clipmap.extents.y != extents.y || armory.renderpath.Clipmap.extents.z != extents.z)
+			armory.renderpath.Clipmap.pre_clear = true;
+
+		armory.renderpath.Clipmap.extents = extents;
+		#end
+
+		#if (rp_voxels != "Off")
+		armory.renderpath.Clipmap.clipmapLevel = (armory.renderpath.Clipmap.clipmapLevel + 1) % Main.voxelgiClipmapCount;
+
+		armory.renderpath.Clipmap.voxelSize = Main.voxelgiVoxelSize * Math.pow(2.0, armory.renderpath.Clipmap.clipmapLevel);
+		var texelSize = 2.0 * armory.renderpath.Clipmap.voxelSize;
+		var camera = iron.Scene.active.camera;
+		var center = new iron.math.Vec3(
+			Math.floor(camera.transform.worldx() / texelSize) * texelSize,
+			Math.floor(camera.transform.worldy() / texelSize) * texelSize,
+			Math.floor(camera.transform.worldz() / texelSize) * texelSize
+		);
+
+		armory.renderpath.Clipmap.clipmap_center_last.x = Std.int((armory.renderpath.Clipmap.clipmap_center.x - center.x) / texelSize);
+		armory.renderpath.Clipmap.clipmap_center_last.y = Std.int((armory.renderpath.Clipmap.clipmap_center.y - center.y) / texelSize);
+		armory.renderpath.Clipmap.clipmap_center_last.z = Std.int((armory.renderpath.Clipmap.clipmap_center.z - center.z) / texelSize);
+
+		armory.renderpath.Clipmap.clipmap_center = center;
+
+		var res = armory.renderpath.Inc.getVoxelRes();
+		var extents = new iron.math.Vec3(armory.renderpath.Clipmap.voxelSize * res);
+		if (armory.renderpath.Clipmap.extents.x != extents.x || armory.renderpath.Clipmap.extents.y != extents.y || armory.renderpath.Clipmap.extents.z != extents.z)
+			armory.renderpath.Clipmap.pre_clear = true;
+
+		armory.renderpath.Clipmap.extents = extents;
 		#end
 	}
 
