@@ -138,6 +138,34 @@ class RenderPath {
 		commands();
 
 		if (!isProbe) frame++;
+
+		#if (rp_voxels != "Off")
+		armory.renderpath.RenderPathCreator.clipmapLevel = (armory.renderpath.RenderPathCreator.clipmapLevel + 1) % Main.voxelgiClipmapCount;
+	 	var clipmap = armory.renderpath.RenderPathCreator.clipmaps[armory.renderpath.RenderPathCreator.clipmapLevel];
+
+		clipmap.voxelSize = Main.voxelgiVoxelSize * Math.pow(2.0, armory.renderpath.RenderPathCreator.clipmapLevel);
+
+		var texelSize = 2.0 * clipmap.voxelSize;
+		var camera = iron.Scene.active.camera;
+		var center = new iron.math.Vec3(
+			Math.floor(camera.transform.worldx() / texelSize) * texelSize,
+			Math.floor(camera.transform.worldy() / texelSize) * texelSize,
+			Math.floor(camera.transform.worldz() / texelSize) * texelSize
+		);
+
+		clipmap.center_last.x = Std.int((clipmap.center.x - center.x) / texelSize);
+		clipmap.center_last.y = Std.int((clipmap.center.y - center.y) / texelSize);
+		clipmap.center_last.z = Std.int((clipmap.center.z - center.z) / texelSize);
+
+		clipmap.center = center;
+
+		var res = armory.renderpath.Inc.getVoxelRes();
+		var extents = new iron.math.Vec3(clipmap.voxelSize * res);
+		if (clipmap.extents.x != extents.x || clipmap.extents.y != extents.y || clipmap.extents.z != extents.z)
+			armory.renderpath.RenderPathCreator.pre_clear = true;
+
+		clipmap.extents = extents;
+		#end
 	}
 
 	public function setTarget(target: String, additional: Array<String> = null, viewportScale = 1.0) {
